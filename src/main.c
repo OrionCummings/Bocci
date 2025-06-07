@@ -35,6 +35,10 @@ int main(int argc, char** argv) {
     // If we have not told the window to close, keep going!
     while (!WindowShouldClose())
     {
+
+        // Get the time at the beginning of the loop
+        float start_frame_time = GetFrameTime();
+
         // Update the application state
         ErrorCode ec_update = update();
         if (ec_update){
@@ -52,6 +56,18 @@ int main(int argc, char** argv) {
         
         // Disable drawing mode (raylib)
         EndDrawing();
+
+        float end_frame_time   = GetFrameTime();
+        float delta_frame_time = end_frame_time - start_frame_time;
+        B_INFO("MOL time: %f", delta_frame_time);
+        if (delta_frame_time < MOL_TIME) {
+
+            // Stall until the loop is over!
+            while(GetFrameTime() < start_frame_time + MOL_TIME) {}
+            
+        } else {
+            B_WARNING("MOL overrun: %f", delta_frame_time);
+        }
     }
 
     // Close the window
